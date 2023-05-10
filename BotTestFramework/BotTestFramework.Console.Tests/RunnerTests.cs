@@ -26,7 +26,7 @@ namespace BotTestFramework.Console.Tests
         [SetUp]
 		public void Setup()
 		{
-            _dlOptions = new DirectLineOptions("https://tokenEndpoint.test", new Uri("https://regionalEndpoint.test"));
+            _dlOptions = new DirectLineOptions("https://tokenEndpoint.test", new Uri("https://regionalEndpoint.test"), "botname");
 
             _directLineClient = new Mock<DirectLineClientBase>();
             _directLineClient.Setup(client => client.SendActivityAsync(It.IsAny<Activity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);

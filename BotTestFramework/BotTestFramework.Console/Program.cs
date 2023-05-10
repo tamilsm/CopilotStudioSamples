@@ -46,6 +46,12 @@ namespace BotTestFramework.Console
             );
             botIdOption.IsRequired = true;
 
+            var botNameOption = new Option<string?>(
+                name: "--botName",
+                description: "The bot name that will be used to filter the messages from the direct line connection."
+            );
+            botNameOption.IsRequired = true;
+
             var verboseOption = new Option<bool>(
                name: "--verbose",
                description: "This flag enables verbose output."
@@ -103,7 +109,8 @@ namespace BotTestFramework.Console
 			var testCommand = new Command("test", "Execute a test (DYM, ChatTranscript or Trigger Phrases) using local files as transcript source.")
 			{
                 tokenEnpointOption,
-				pathOption,
+                botNameOption,
+                pathOption,
                 dymMessageOption,
                 noneOfTheseMessageOption,
                 verboseOption,
@@ -190,10 +197,10 @@ namespace BotTestFramework.Console
             command.AddCommand(getFromDVCommand);
 			command.AddCommand(convertChatFile);
 
-            testCommand.SetHandler(async (tokenEndpoint, path, verbose, log) =>
+            testCommand.SetHandler(async (tokenEndpoint, botName, path, verbose, log) =>
             {
                 var regionalEndpoint = await RegionalEndpointHelper.GetEndpointAsync(new Uri(tokenEndpoint));
-                var options = new DirectLineOptions(tokenEndpoint, regionalEndpoint);
+                var options = new DirectLineOptions(tokenEndpoint, regionalEndpoint, botName);
                 var logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
                     .WriteTo.Console(outputTemplate: "{Message}{NewLine}")
@@ -206,7 +213,7 @@ namespace BotTestFramework.Console
                     var result = await runner.RunTranscriptTestAsync(options, path, verbose);
                     Environment.Exit(result ? 0 : 1);
                 }
-            }, tokenEnpointOption, pathOption, verboseOption, logOption);
+            }, tokenEnpointOption, botNameOption, pathOption, verboseOption, logOption);
 
 			getFromDVCommand.SetHandler(async (dataverseOptions, interval, value, interactive, path, verbose) =>
             {
@@ -247,10 +254,10 @@ namespace BotTestFramework.Console
                 Environment.Exit(result ? 0 : 1);
             }, new DataverseOptionsBinder(clientIdOption, clientSecretOption, environmentUrlOption, tenantIdOption, botIdOption), intervalOption, valueOption, interactiveOption, pathOption, verboseOption);
 
-			testScaleCommand.SetHandler(async (tokenEndpoint, maxAttempts, path, verbose, log) =>
+			testScaleCommand.SetHandler(async (tokenEndpoint, botName, maxAttempts, path, verbose, log) =>
 			{
                 var regionalEndpoint = await RegionalEndpointHelper.GetEndpointAsync(new Uri(tokenEndpoint));
-                var options = new DirectLineOptions(tokenEndpoint, regionalEndpoint);
+                var options = new DirectLineOptions(tokenEndpoint, regionalEndpoint, botName);
                 var logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
                     .WriteTo.Console(outputTemplate: "{Message}{NewLine}")
@@ -263,7 +270,7 @@ namespace BotTestFramework.Console
                     var result = await runner.RunScaleTestAsync(options, maxAttempts, path, verbose);
                     Environment.Exit(result ? 0 : 1);
                 }
-            }, tokenEnpointOption, maxAttempts, pathOption, verboseOption, logOption);
+            }, tokenEnpointOption, botNameOption, maxAttempts, pathOption, verboseOption, logOption);
 
             convertChatFile.SetHandler((path, outputFile, log) =>
 			{

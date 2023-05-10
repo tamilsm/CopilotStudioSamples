@@ -14,12 +14,14 @@ namespace BotTestFramework.Console.Models.DirectLine
         public Uri BotUrl { get { return _botUrl; } }
         public Uri RegionalEndpoint { get { return _regionalEndpoint; } }
         public string BotId { get { return _botId;  } }
+        public string BotName { get; set; }
 
-        public DirectLineOptions(string botUrl, Uri regionalEndpoint)
+        public DirectLineOptions(string botUrl, Uri regionalEndpoint, string botName)
         {
             _regionalEndpoint = regionalEndpoint;
             _botUrl = new Uri(botUrl);
             _botId = GetBotNameFromUri(_botUrl);
+            BotName = botName;
         }
 
         private static string GetBotNameFromUri(Uri u)

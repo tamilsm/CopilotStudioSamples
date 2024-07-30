@@ -7,12 +7,13 @@ namespace PVATestFramework.Console.Helpers
     {
         public const string Message = "message";
         public const string Trace = "trace";
+        public const string Event = "event";
     }
 
     public static class RoleTypes
     {
-        public const int User = 1;
-        public const int Bot = 0;
+        public const string User = "user";
+        public const string Bot = "bot";
     }
 
     public static class Constants

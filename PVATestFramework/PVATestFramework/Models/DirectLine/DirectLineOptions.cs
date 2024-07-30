@@ -26,7 +26,7 @@ namespace PVATestFramework.Console.Models.DirectLine
         {
             var host = u.AbsolutePath;
             var parts = host.Split('/').ToList();
-            int index = parts.IndexOf("bots");
+            int index = parts.IndexOf("botsbyschema");
             return ((index + 1) > 0) ? parts[index + 1] : Constants.InvalidBotUri;
         }
     }

@@ -223,8 +223,8 @@ namespace PVATestFramework.Console
                                 {
                                     Type = Helpers.ActivityTypes.Message,
                                     Text = userText,
-                                    From = new From(string.Empty, 1),
-                                    Timestamp = ToUnixTimeSeconds(DateTime.UtcNow)
+                                    From = new From(string.Empty, "1"),
+                                    Timestamp = DateTime.UtcNow.ToString()
                                 };
                             }                            
 						}
@@ -242,8 +242,8 @@ namespace PVATestFramework.Console
                                 {
                                     Type = Helpers.ActivityTypes.Message,
                                     Text = botText,
-                                    From = new From(string.Empty, 0),
-                                    Timestamp = ToUnixTimeSeconds(DateTime.UtcNow)
+                                    From = new From(string.Empty, ""),
+                                    Timestamp = DateTime.UtcNow.ToString()
                                 };
                             }                            
 						}
@@ -274,8 +274,8 @@ namespace PVATestFramework.Console
                             {
                                 ValueType = "IntentCandidates",
                                 Type = Helpers.ActivityTypes.Trace,
-                                From = new From(string.Empty, 0),
-                                Timestamp = ToUnixTimeSeconds(DateTime.UtcNow),
+                                From = new From(string.Empty, "0"),
+                                Timestamp = DateTime.UtcNow.ToString(),
                                 Value = new Value()
                                 {
                                     IntentCandidates = intentCandidates
@@ -329,6 +329,14 @@ namespace PVATestFramework.Console
 
             timer.Start();
             path = fileHandler.GetFullPath(path);
+
+            do
+            {
+                if (activityList.Activities.FirstOrDefault().From.Role == RoleTypes.Bot)
+                {
+                    activityList.Activities.RemoveAt(0);
+                }
+            } while (activityList.Activities.FirstOrDefault().From.Role == RoleTypes.Bot);
 
             try
             {
@@ -653,6 +661,8 @@ namespace PVATestFramework.Console
             // Ignore trace activities unless it is an IntentCandidates type one. Also, ignore the DYM message as it is sent in the previous activity
             return (activity.Type == Helpers.ActivityTypes.Trace
                 && !activity.ValueType.Equals("IntentCandidates", StringComparison.InvariantCultureIgnoreCase))
+                || (activity.Type == Helpers.ActivityTypes.Event
+                && activity.ValueType.Equals("DialogTracingInfo", StringComparison.InvariantCultureIgnoreCase))
                 || (activity.Type == Helpers.ActivityTypes.Message
                 && activity.Text != null
                 && activity.Text.Equals(BotDefaultMessages.DYM, StringComparison.InvariantCultureIgnoreCase));

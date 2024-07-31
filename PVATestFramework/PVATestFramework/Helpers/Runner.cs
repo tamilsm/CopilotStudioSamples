@@ -483,11 +483,13 @@ namespace PVATestFramework.Console
                                 logRecords.Add(csvRecord);
                                 break;
 
+                            case "channel":
+                                break;
                             default:
                                 throw new InvalidOperationException($"Invalid script role {activity.From.Role}.");
                         }
 
-                        if (testFailed) break;
+                        //if (testFailed) break;
                     }
                 }
 
@@ -660,9 +662,8 @@ namespace PVATestFramework.Console
 		{
             // Ignore trace activities unless it is an IntentCandidates type one. Also, ignore the DYM message as it is sent in the previous activity
             return (activity.Type == Helpers.ActivityTypes.Trace
-                && !activity.ValueType.Equals("IntentCandidates", StringComparison.InvariantCultureIgnoreCase))
-                || (activity.Type == Helpers.ActivityTypes.Event
-                && activity.ValueType.Equals("DialogTracingInfo", StringComparison.InvariantCultureIgnoreCase))
+                && activity.ValueType != null && !activity.ValueType.Equals("IntentCandidates", StringComparison.InvariantCultureIgnoreCase))
+                || activity.Type == Helpers.ActivityTypes.Event
                 || (activity.Type == Helpers.ActivityTypes.Message
                 && activity.Text != null
                 && activity.Text.Equals(BotDefaultMessages.DYM, StringComparison.InvariantCultureIgnoreCase));
